@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ExplorerX.Data.Implementations;
+using ExplorerX.View_Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,17 @@ namespace ExplorerX
     /// </summary>
     public partial class FileeExplorerControl : UserControl
     {
+        public FileExplorerViewModel FileExplorerViewModel { get; set; } = new FileExplorerViewModel();
+
         public FileeExplorerControl()
         {
             InitializeComponent();
+            DataContext = FileExplorerViewModel;
+        }
+
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            FileExplorerViewModel.Navigate();
         }
     }
 }
