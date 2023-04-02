@@ -5,41 +5,33 @@ namespace ExplorerX.Data.Implementations;
 
 public class RelayCommand : ICommand
 {
-    #region Properties
+    private readonly Action _execute;
+    private readonly Func<bool> _canExecute;
 
-    private readonly Action<object> _executeAction;
-    private readonly Predicate<object> _canExecuteAction;
-
-    #endregion
-
-    public RelayCommand(Action<object> execute)
-        : this(execute, _ => true)
+    public RelayCommand(Action execute, Func<bool> canExecute = null)
     {
-    }
-    public RelayCommand(Action<object> action, Predicate<object> canExecute)
-    {
-        _executeAction = action;
-        _canExecuteAction = canExecute;
+        if (execute == null)
+        {
+            throw new ArgumentNullException(nameof(execute));
+        }
+
+        _execute = execute;
+        _canExecute = canExecute ?? (() => true);
     }
 
-    #region Methods
-
-    public bool CanExecute(object? parameter)
+    public bool CanExecute(object parameter)
     {
-        return parameter != null && _canExecuteAction(parameter);
+        return _canExecute();
     }
 
-    public event EventHandler? CanExecuteChanged
+    public void Execute(object parameter)
     {
-        add => CommandManager.RequerySuggested += value;
-        remove => CommandManager.RequerySuggested -= value;
+        _execute();
     }
 
-    public void Execute(object? parameter)
+    public event EventHandler CanExecuteChanged
     {
-        if (parameter != null) 
-            _executeAction(parameter);
+        add { CommandManager.RequerySuggested += value; }
+        remove { CommandManager.RequerySuggested -= value; }
     }
-
-    #endregion
 }

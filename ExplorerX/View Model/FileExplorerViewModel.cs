@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 using ExplorerX.Data.Enums;
 using ExplorerX.Data.Implementations;
@@ -93,7 +94,7 @@ namespace ExplorerX.View_Model
 
         public ICommand NavigateBackCommand { get; set; }
         public ICommand NavigateForwardCommand { get; set; }
-
+        
         #endregion
         
         #region Navigation and File loading
@@ -134,8 +135,7 @@ namespace ExplorerX.View_Model
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                MessageBox.Show(e.Message);
             }
         }
 
@@ -238,8 +238,8 @@ namespace ExplorerX.View_Model
 
         public FileExplorerViewModel()
         {
-            NavigateBackCommand = new RelayCommand(_ => { NavigateBack(); }, _ => true);
-            NavigateForwardCommand = new RelayCommand(_ => { NavigateForward(); });
+            NavigateBackCommand = new RelayCommand(NavigateBack);
+            NavigateForwardCommand = new RelayCommand(NavigateForward);
 
             var d = new DirectoryInfo(System.IO.Directory.GetCurrentDirectory());
             OriginalParent = new Directory
@@ -252,6 +252,5 @@ namespace ExplorerX.View_Model
 
             NavigateTo(OriginalParent);
         }
-        
     }
 }
