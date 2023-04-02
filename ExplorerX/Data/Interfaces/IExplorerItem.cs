@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ExplorerX.Data.Enums;
 
-namespace ExplorerX.Data.Implementations
+namespace ExplorerX.Data.Interfaces
 {
     public interface IExplorerItem
     {
@@ -17,11 +18,4 @@ namespace ExplorerX.Data.Implementations
 
         public int Size { get; set; }
     }
-
-    public enum ExplorerItemType
-    {
-        File,
-        Directory
-    }
-    
 }

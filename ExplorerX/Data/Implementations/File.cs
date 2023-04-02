@@ -1,10 +1,8 @@
-﻿using ExplorerX.Data.Implementations;
-using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using ExplorerX.Data.Enums;
+using ExplorerX.Data.Interfaces;
 
-namespace ExplorerX.Data
+namespace ExplorerX.Data.Implementations
 {
     public class File : IExplorerItem
     {

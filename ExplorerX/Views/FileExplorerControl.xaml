@@ -5,7 +5,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             x:Class="ExplorerX.FileeExplorerControl"
+             x:Class="ExplorerX.Views.FileExplorerControl"
              mc:Ignorable="d" 
              d:DesignHeight="300" Width="auto">
     <Grid>
@@ -25,9 +25,9 @@
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="40" />
                 <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="35" />
                 <ColumnDefinition MinWidth="100" />
-                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="35" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -47,17 +47,18 @@
 
             <ComboBox  BorderThickness="2" Grid.Row="0" Grid.Column="2"
                   Width="auto" Height="auto" HorizontalAlignment="Stretch"
-                  IsEditable="True" Text ="{Binding DirectoryPath}"/>
+                  IsEditable="True" Text ="{Binding DirectoryPath}"
+                  ItemsSource="{Binding SubDirectoryList}" />
 
             <Button Width="29" BorderThickness="0" MaxWidth="29"
                     Grid.Row="0" Grid.Column="3" Margin="2"
-                    HorizontalAlignment="Right" Content="{iconPacks:BootstrapIcons Search}" 
+                    HorizontalAlignment="Right" Content="{iconPacks:BootstrapIcons ArrowCounterclockwise}" 
                     Background="White" RenderTransformOrigin="10.217,0.307"/>
 
 
-            <ComboBox BorderThickness="2" Grid.Row="0" Grid.Column="4"
+            <TextBox BorderThickness="2" Grid.Row="0" Grid.Column="4"
                   Width="auto" Height="auto" HorizontalAlignment="Stretch"
-                  IsEditable="True" Text ="{Binding SearchText}"/>
+                  Text ="{Binding SearchText}" FontSize="12"/>
 
             <Button Width="29" BorderThickness="0" MaxWidth="29"
                     Grid.Row="0" Grid.Column="5" Margin="2"

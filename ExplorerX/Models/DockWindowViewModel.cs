@@ -1,71 +1,52 @@
-﻿using System.Windows.Input;
-using ExplorerX.Data;
-
-namespace ExplorerX.Models;
+﻿namespace ExplorerX.Models;
 
 public abstract class DockWindowViewModel : BaseViewModel
 {
-    private ICommand _CloseCommand;
-    public ICommand CloseCommand
-    {
-        get
-        {
-            if (_CloseCommand == null)
-                _CloseCommand = new RelayCommand(call => Close());
-            return _CloseCommand;
-        }
-    }
-    
-    private bool _IsClosed;
+    private bool _isClosed;
     public bool IsClosed
     {
-        get { return _IsClosed; }
+        get => _isClosed;
         set
         {
-            if (_IsClosed != value)
-            {
-                _IsClosed = value;
-                OnPropertyChanged(nameof(IsClosed));
-            }
+            if (_isClosed == value) 
+                return;
+
+            _isClosed = value;
+            OnPropertyChanged(nameof(IsClosed));
         }
     }
     
-    private bool _CanClose;
+    private bool _canClose;
     public bool CanClose
     {
-        get { return _CanClose; }
+        get => _canClose;
         set
         {
-            if (_CanClose != value)
-            {
-                _CanClose = value;
-                OnPropertyChanged(nameof(CanClose));
-            }
+            if (_canClose == value) 
+                return;
+
+            _canClose = value;
+            OnPropertyChanged(nameof(CanClose));
         }
     }
 
-    private string _Title;
-    public string Title
+    private string? _title;
+    public string? Title
     {
-        get { return _Title; }
+        get => _title;
         set
         {
-            if (_Title != value)
-            {
-                _Title = value;
-                OnPropertyChanged(nameof(Title));
-            }
+            if (_title == value) 
+                return;
+
+            _title = value;
+            OnPropertyChanged(nameof(Title));
         }
     }
-    
-    public DockWindowViewModel()
+
+    protected DockWindowViewModel()
     {
         this.CanClose = true;
         this.IsClosed = false;
-    }
-
-    public void Close()
-    {
-        this.IsClosed = true;
     }
 }
