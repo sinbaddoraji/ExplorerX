@@ -6,8 +6,11 @@
                  mc:Ignorable="d"
                  Title="MainWindow" Height="450" Width="800">
     <DockingManager BorderThickness="1,1,1,1" SnapsToDevicePixels="True" ClipToBounds="True"
-                    DataContext="{Binding DockManagerViewModel}"
+                    DataContext="{Binding }"
                     DocumentsSource="{Binding Documents}" Margin="0,0,0,-6">
+
+
+
         <DockingManager.LayoutItemContainerStyle>
             <Style TargetType="{x:Type LayoutItem}" >
                 <Setter Property="Title" Value="{Binding Model.Title}" />

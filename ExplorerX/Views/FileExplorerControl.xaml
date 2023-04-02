@@ -15,7 +15,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="45"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid Height="auto" 
@@ -55,7 +54,7 @@
                     Background="White" RenderTransformOrigin="10.217,0.307"/>
 
 
-            <TextBox BorderThickness="2" Grid.Row="0" Grid.Column="4"
+            <TextBox Grid.Row="0" Grid.Column="4"  VerticalContentAlignment="Center"
                   Width="auto" Height="auto" HorizontalAlignment="Stretch"
                   Text ="{Binding SearchText}" FontSize="12"/>
 
@@ -66,6 +65,8 @@
 
         </Grid>
 
+        <FrameworkElement x:Name="proxyElement"></FrameworkElement>
+
         <ListView Background="White"
           Grid.Row="1"
           Height="auto"
@@ -74,6 +75,21 @@
           MouseDoubleClick="ListView_MouseDoubleClick"
           SelectedItem="{Binding SelectedExplorerItem, Mode=TwoWay}"
           ItemsSource="{Binding ExplorerItems}">
+
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="Open" Command="{Binding Source={x:Reference Name=proxyElement}, Path=DataContext.OpenCommand}"  />
+                                <MenuItem Header="Open in new tab" Command="{Binding Source={x:Reference Name=proxyElement}, Path=DataContext.NewTabCommand}"  />
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="">
@@ -102,8 +118,5 @@
                 </GridView>
             </ListView.View>
         </ListView>
-
-
-        <StatusBar Grid.Row="2" BorderBrush="Black" Background="WhiteSmoke"/>
     </Grid>
 </UserControl>

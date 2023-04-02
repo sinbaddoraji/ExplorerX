@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ExplorerX.Models;
+using ExplorerX.View_Model;
 using MahApps;
 using MahApps.Metro.Controls;
 
@@ -26,7 +26,7 @@ namespace ExplorerX
         public MainWindow()
         {
             InitializeComponent();
-            var mainViewModel = new MainWindowViewModel();
+            var mainViewModel = new DockManagerViewModel();
             DataContext = mainViewModel;
         }
     }

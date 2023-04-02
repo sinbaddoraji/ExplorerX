@@ -53,9 +53,9 @@ namespace ExplorerX.View_Model
             }
         }
 
-        private IExplorerItem? _selectedExplorerItem;
+        private static IExplorerItem? _selectedExplorerItem;
 
-        public IExplorerItem? SelectedExplorerItem
+        public static IExplorerItem? SelectedExplorerItem
         {
             get => _selectedExplorerItem;
             set
@@ -63,7 +63,7 @@ namespace ExplorerX.View_Model
                 if (value == null || _selectedExplorerItem == value)
                     return;
                 _selectedExplorerItem = value;
-                OnPropertyChanged(nameof(SelectedExplorerItem));
+                //OnPropertyChanged(nameof(SelectedExplorerItem));
             }
         }
 
@@ -94,11 +94,26 @@ namespace ExplorerX.View_Model
 
         public ICommand NavigateBackCommand { get; set; }
         public ICommand NavigateForwardCommand { get; set; }
-        
-        #endregion
-        
+
+        public ICommand OpenCommand { get; set; }
+
+        private ICommand _newTabCommand;
+
+        public ICommand NewTabCommand
+        {
+            get => _newTabCommand;
+
+            set
+            {
+                _newTabCommand = value;
+                OnPropertyChanged(nameof(NewTabCommand));
+            }
+        }
+
+    #endregion
+
         #region Navigation and File loading
-        
+
         public void NavigateTo(string? path)
         {
             if (path == null)
@@ -178,6 +193,8 @@ namespace ExplorerX.View_Model
 
             var currentDirectory = new DirectoryInfo(DirectoryPath);
             var parentDirectory = currentDirectory.Parent;
+
+            ShortName = currentDirectory.Name;
             if (parentDirectory != null)
             {
                 ExplorerItems.Add(new Directory
@@ -240,6 +257,7 @@ namespace ExplorerX.View_Model
         {
             NavigateBackCommand = new RelayCommand(NavigateBack);
             NavigateForwardCommand = new RelayCommand(NavigateForward);
+            OpenCommand = new RelayCommand(Navigate);
 
             var d = new DirectoryInfo(System.IO.Directory.GetCurrentDirectory());
             OriginalParent = new Directory
