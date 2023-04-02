@@ -9,13 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Directory = ExplorerX.Data.Directory;
 using File = ExplorerX.Data.File;
 
 namespace ExplorerX.View_Model
 {
     public class FileExplorerViewModel : INotifyPropertyChanged
     {
-        private string _directoryPath = @"C:\";
+        private string _directoryPath;
 
         public List<IExplorerItem> BrowseHistory = new List<IExplorerItem>();
         public string DirectoryPath 
@@ -24,13 +25,13 @@ namespace ExplorerX.View_Model
             
             set
             {
-                if(System.IO.Directory.Exists(value))
+                if(System.IO.Directory.Exists(value) && _directoryPath != value)
                 {
                     _directoryPath = value;
-                    GetFilesAndDirectories();
-
-                    BrowseIndex++;
+                    NavigateTo(_directoryPath);
                 }
+
+                OnPropertyChanged("DirectoryPath");
             }
         }
 
@@ -60,39 +61,68 @@ namespace ExplorerX.View_Model
 
         public string SearchText { get; set; }
 
+        private Directory OriginalParent { get; set; }
+
         public ObservableCollection<IExplorerItem> ExplorerItems { get; set; } = new ObservableCollection<IExplorerItem>();
 
         public FileExplorerViewModel()
         {
-            GetFilesAndDirectories();
+            NavigateBackCommand = new RelayCommand(_ => { NavigateBack(); });
+            NavigateForwardCommand = new RelayCommand(_ => { NavigatForward(); });
 
-            //NavigateBackCommand = new RelayCommand(NavigateBack);
-            //NavigateForwardCommand = new RelayCommand(NavigateForward, () => BrowseIndex < BrowseHistory.Count - 1);
+            var d = new System.IO.DirectoryInfo(System.IO.Directory.GetCurrentDirectory());
+            OriginalParent = new Directory()
+            {
+                FullName = d.FullName,
+                Name = d.Name,
+                DateModified = d.LastWriteTime,
+                Type = ExplorerItemType.Directory,
+            };
 
+            NavigateTo(OriginalParent);
+        }
+
+        public void NavigateTo(string path)
+        {
+            var d = new System.IO.DirectoryInfo(path);
+            var newDirectory = new Directory()
+            {
+                FullName = d.FullName,
+                Name = d.Name,
+                DateModified = d.LastWriteTime,
+                Type = ExplorerItemType.Directory,
+            };
+            NavigateTo(newDirectory);
         }
 
         public void NavigateTo(IExplorerItem explorerItem)
         {
-            if(explorerItem != null && explorerItem.Type == ExplorerItemType.Directory) 
+            if(explorerItem.Type == ExplorerItemType.Directory) 
             {
                 DirectoryPath = explorerItem.FullName;
+                BrowseHistory.Add(explorerItem);
+                GetFilesAndDirectories();
             }
         }
 
         public void Navigate()
         {
             NavigateTo(SelectedExplorerItem);
+            DirectoryPath = SelectedExplorerItem.FullName;
 
-            if (BrowseHistory.Count > BrowseIndex)
-                BrowseHistory.RemoveRange(BrowseIndex, BrowseHistory.Count - BrowseIndex);
+            BrowseIndex = BrowseHistory.Count - 1;
         }
-        public ICommand NavigateBackCommand { get; }
-        public ICommand NavigateForwardCommand { get; }
+
+        public ICommand NavigateBackCommand { get; set;  } 
+        public ICommand NavigateForwardCommand { get; set;  }
 
 
-        public int BrowseIndex { get; set; } = 0;
+        public int BrowseIndex { get; set; } = -1;
         public void NavigateBack()
         {
+            if (BrowseIndex == -1)
+                BrowseIndex = BrowseHistory.Count - 1;
+
             if (BrowseIndex > 0)
                 BrowseIndex--;
 
@@ -101,7 +131,7 @@ namespace ExplorerX.View_Model
 
         public void NavigatForward()
         {
-            if (BrowseIndex < BrowseHistory.Count -2)
+            if (BrowseIndex < BrowseHistory.Count -1)
                 BrowseIndex++;
 
             if (BrowseHistory.Count > BrowseIndex)
@@ -111,31 +141,39 @@ namespace ExplorerX.View_Model
 
         public void GetFilesAndDirectories()
         {
-            ExplorerItems.Clear();
-
-            foreach (var item in System.IO.Directory.EnumerateDirectories(DirectoryPath))
+            try
             {
-                DirectoryInfo d = new DirectoryInfo(item);
-                ExplorerItems.Add(new File()
+                ExplorerItems.Clear();
+
+                foreach (var item in System.IO.Directory.EnumerateDirectories(DirectoryPath))
                 {
-                    FullName = d.FullName,
-                    Name = d.Name,
-                    DateModified = d.LastWriteTime,
-                    Type = ExplorerItemType.Directory,
-                });
+                    DirectoryInfo d = new DirectoryInfo(item);
+                    ExplorerItems.Add(new File()
+                    {
+                        FullName = d.FullName,
+                        Name = d.Name,
+                        DateModified = d.LastWriteTime,
+                        Type = ExplorerItemType.Directory,
+                    });
+                }
+
+                foreach (var item in System.IO.Directory.EnumerateFiles(DirectoryPath))
+                {
+                    FileInfo f = new FileInfo(item);
+                    ExplorerItems.Add(new File()
+                    {
+                        FullName = f.FullName,
+                        Name = f.Name,
+                        DateModified = f.LastWriteTime,
+                        Type = ExplorerItemType.File,
+                        Size = (int)f.Length
+                    });
+                }
             }
-
-            foreach (var item in System.IO.Directory.EnumerateFiles(DirectoryPath))
+            catch (Exception e)
             {
-                FileInfo f = new FileInfo(item);
-                ExplorerItems.Add(new File()
-                {
-                    FullName = f.FullName,
-                    Name = f.Name,
-                    DateModified = f.LastWriteTime,
-                    Type = ExplorerItemType.File,
-                    Size = (int)f.Length
-                });
+                Console.WriteLine(e);
+                //throw;
             }
         }
         
