@@ -145,7 +145,7 @@ namespace ExplorerX.View_Model
                 }
                 else if (explorerItem is { Type: ExplorerItemType.File, FullName: { } })
                 {
-                    Process.Start(explorerItem.FullName);
+                    Process.Start("explorer.exe", explorerItem.FullName);
                 }
             }
             catch (Exception e)
