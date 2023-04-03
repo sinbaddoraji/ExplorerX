@@ -11,7 +11,7 @@ ExplorerX is a minimalist windows desktop application built using the Windows Pr
   
   - Refresh the current directory to see changes made to files and directories.
   
-  - Search for files and directories by name using a search box.
+  - Search for files and directories by name or patterns using a search box.
   
   - Open files and directories by double-clicking on them in the list view.
   
@@ -25,4 +25,4 @@ ExplorerX is a minimalist windows desktop application built using the Windows Pr
   
   - Dirkster.AvalonDock library for implementing the tabbed document interface
   
-  - MVVM (Model-View-ViewModel) design pattern for separating the user interface from the business logic
+  - MVVM (Model-View-ViewModel) design pattern for separating the user interface from the back end logic
